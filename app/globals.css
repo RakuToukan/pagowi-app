@@ -12,15 +12,30 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
+@theme {
+  --color-primary: #5c1d1d;
+  --color-secondary: #e1e1f8;
+}
+
+@media (prefers-color-scheme: light) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
 }
 
+/* Custom Class */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: JakartaSans, Helvetica, sans-serif;
+}
+
+@layer utilities {
+  .nav::after {
+    @apply content-[''] bg-primary h-0.5 w-full left-0 scale-x-0 -bottom-1 rounded-full absolute text-center duration-300;
+  }
+  .nav:hover::after {
+    @apply scale-x-75;
+  }
 }
