@@ -13,8 +13,8 @@ const HeroSection = () => {
           />
         </div>
       </div>
-      <div className="hero-cta absolute inset-0 flex flex-col items-center text-center mx-10 mt-10 justify-evenly lg:flex-row md:mx-20 lg:mx-50">
-        <h1 className="text-4xl font-bold mx-10 text-white md:text-5xl lg:text-6xl lg:w-3/4">
+      <div className="hero-cta absolute inset-0 flex flex-col items-center text-center mx-10 mt-15 justify-evenly lg:flex-row md:mx-20 lg:mx-50">
+        <h1 className="text-4xl font-bold text-white md:text-5xl md:mx-10 lg:text-6xl lg:w-3/4">
           Ubah Fotomu jadi Seni Mosaik Profesional dalam Hitungan Detik
         </h1>
 
