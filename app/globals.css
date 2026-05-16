@@ -14,7 +14,7 @@
 
 @theme {
   --color-primary: #5c1d1d;
-  --color-secondary: #e1e1f8;
+  --color-secondary: #ede5e5;
 }
 
 @media (prefers-color-scheme: light) {
