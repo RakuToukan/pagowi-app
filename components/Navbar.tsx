@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Button from "./Button";
 import { useEffect, useRef, useState } from "react";
 
 const Navbar = () => {
@@ -92,7 +93,14 @@ const Navbar = () => {
         </nav>
 
         {/* CTA-Button */}
-        <div className="hidden xl:flex" id="cta"></div>
+        <div
+          className="hidden xl:flex bg-primary hover:bg-secondary transition-colors min-w-40 items-center justify-center rounded-full h-10 px-5 shadow-xl"
+          id="cta"
+        >
+          <Link href="#create" className="text-secondary font-semibold">
+            Buat Mosaikmu!
+          </Link>
+        </div>
       </div>
     </header>
   );

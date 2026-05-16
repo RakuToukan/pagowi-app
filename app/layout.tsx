@@ -24,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" bbai-tooltip-injected="true" className="scroll-smooth">
+    <html lang="en" suppressHydrationWarning className="scroll-smooth">
       <body className={`${jakartaSans.variable} antialiased`}>{children}</body>
     </html>
   );
