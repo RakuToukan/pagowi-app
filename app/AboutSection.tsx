@@ -28,7 +28,7 @@ const AboutSection = () => {
             <h3 className="text-xl font-bold text-primary mt-4">
               Rafif Rizal Ali Ahmadi
             </h3>
-            <h4 className="text-lg text-primary">25032014003</h4>
+            <h4 className="text-lg text-primary">Backend Developer</h4>
           </div>
           {/* Aldi */}
           <div
@@ -45,7 +45,7 @@ const AboutSection = () => {
             <h3 className="text-xl font-bold text-primary mt-4">
               M Aldi Nur Cholis
             </h3>
-            <h4 className="text-lg text-primary">25032014003</h4>
+            <h4 className="text-lg text-primary">IT Support</h4>
           </div>
           {/* Rakha */}
           <div
@@ -65,7 +65,7 @@ const AboutSection = () => {
             <h4 className="text-lg text-primary">Frontend Developer</h4>
           </div>
         </div>
-        <div>
+        <div className="border-t-2 border-secondary">
           <p className="text-lg text-secondary text-center mt-10">
             PAG OWI lahir dari sebuah ide sederhana: Bagaimana jika kita bisa
             melihat gambaran besar dari ribuan momen kecil yang kita miliki?

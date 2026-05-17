@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import HeroSection from "./HeroSection";
 import CreateSection from "./CreateSection";
 import AboutSection from "./AboutSection";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
       <HeroSection />
       <CreateSection />
       <AboutSection />
+      <Footer />
     </>
   );
 }

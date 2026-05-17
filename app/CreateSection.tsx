@@ -11,7 +11,7 @@ const CreateSection = () => {
         <h1 className="text-4xl font-bold text-gray-700 md:text-5xl lg:text-6xl text-center">
           Buat Mosaikmu!
         </h1>
-
+        {/* Container Upload */}
         <div className="w-full flex flex-col items-center gap-8 lg:flex-row lg:items-start">
           {/* Upload Gambar Referensi */}
           <div className="w-full lg:w-2/3">
@@ -40,6 +40,24 @@ const CreateSection = () => {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+
+        {/* Sample */}
+        <div className="w-full">
+          <h3>Coba Sampel Gambar dari Kami :</h3>
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))] gap-3 h-48 overflow-auto p-3">
+            {Array.from({ length: 7 }).map((_, i) => (
+              <div
+                key={i}
+                className="border-2 border-dashed border-gray-300 rounded-2xl w-full h-30 flex flex-col items-center justify-center gap-5"
+              >
+                <h4 className="mt-5">Sampel {i + 1}</h4>
+                <span className="material-symbols-rounded text-5xl h-full">
+                  image
+                </span>
+              </div>
+            ))}
           </div>
         </div>
 
