@@ -31,13 +31,10 @@ const Footer = () => {
           </Link>
         </div>
         {/* CTA Button */}
-        <div
-          className="flex bg-primary hover:bg-secondary transition-colors min-w-40 items-center justify-center rounded-full w-50 h-10 px-5 shadow-xl"
-          id="cta"
-        >
+        <div className="" id="cta">
           <Link
             href="#create"
-            className="text-secondary font-semibold items-center justify-center"
+            className="text-secondary font-semibold items-center justify-center flex bg-primary hover:bg-secondary transition-colors min-w-40 rounded-full w-50 h-10 px-5 shadow-xl  hover:text-primary"
           >
             Buat Mosaikmu!
           </Link>

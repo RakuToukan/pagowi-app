@@ -65,7 +65,7 @@ const AboutSection = () => {
             <h4 className="text-lg text-primary">Frontend Developer</h4>
           </div>
         </div>
-        <div className="border-t-2 border-secondary">
+        <div className="border-t-2 border-y-secondary">
           <p className="text-lg text-secondary text-center mt-10">
             PAG OWI lahir dari sebuah ide sederhana: Bagaimana jika kita bisa
             melihat gambaran besar dari ribuan momen kecil yang kita miliki?
