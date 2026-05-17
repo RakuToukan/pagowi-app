@@ -93,10 +93,10 @@ const Navbar = () => {
         </nav>
 
         {/* CTA-Button */}
-        <div className="" id="cta">
+        <div className="hidden xl:flex" id="cta">
           <Link
             href="#create"
-            className="hidden xl:flex bg-primary hover:bg-secondary transition-colors min-w-40 items-center justify-center rounded-full h-10 px-5 shadow-xl text-secondary font-semibold hover:text-primary"
+            className=" bg-primary hover:bg-secondary transition-colors min-w-40 items-center justify-center rounded-full h-10 px-5 shadow-xl text-secondary font-semibold hover:text-primary"
           >
             Buat Mosaikmu!
           </Link>

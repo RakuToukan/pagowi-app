@@ -25,13 +25,10 @@ const HeroSection = () => {
             </h1>
           </div>
           <div
-            className="xl:hidden flex bg-secondary hover:bg-primary transition-colors max-w-50 items-center justify-center rounded-full h-10 px-5 shadow-xl m-auto"
+            className="xl:hidden flex bg-secondary transition-colors max-w-50 items-center justify-center rounded-full h-10 px-5 shadow-xl m-auto"
             id="cta"
           >
-            <Link
-              href="#create"
-              className="text-primary font-semibold hover:text-secondary"
-            >
+            <Link href="#create" className="text-primary font-semibold">
               Buat Mosaikmu!
             </Link>
           </div>
