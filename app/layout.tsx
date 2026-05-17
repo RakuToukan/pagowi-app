@@ -25,7 +25,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className="scroll-smooth">
-      <body className={`${jakartaSans.variable} antialiased`}>{children}</body>
+      <body className={`${jakartaSans.variable} antialiased`} tabIndex={-1}>
+        {children}
+      </body>
     </html>
   );
 }

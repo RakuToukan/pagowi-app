@@ -73,19 +73,19 @@ const Navbar = () => {
             Home
           </Link>
           <Link
-            href="#about"
+            href="#service"
             className="nav relative items-center text-md tracking-normal hover:text-black"
           >
             Our Service
           </Link>
           <Link
-            href="#program"
+            href="#pricing"
             className="nav relative text-md tracking-normal hover:text-black"
           >
             Pricing
           </Link>
           <Link
-            href="#kalkulator-zakat"
+            href="#about"
             className="nav relative text-md tracking-normal hover:text-black"
           >
             About Us
