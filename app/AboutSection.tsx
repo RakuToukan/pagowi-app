@@ -12,11 +12,11 @@ const AboutSection = () => {
           Tentang Kami
         </h1>
         {/* Personal Card */}
-        <div className="w-fit flex flex-col items-center gap-10 mt-5 md:flex-row">
+        <div className="w-fit items-center gap-10 mt-5 flex flex-wrap">
           {/* Rafif */}
           <div
             id="rafif"
-            className="w-60 h-80 bg-secondary flex flex-col items-center justify-center rounded-2xl shadow-lg md:zoom-90 lg:zoom-100"
+            className="w-60 h-80 bg-secondary flex flex-col items-center justify-center rounded-2xl shadow-lg"
           >
             <Image
               src="/profile/rafif-profile.png"
@@ -33,7 +33,7 @@ const AboutSection = () => {
           {/* Aldi */}
           <div
             id="Aldi"
-            className="w-60 h-80 bg-secondary flex flex-col items-center justify-center rounded-2xl shadow-lg md:zoom-90 lg:zoom-100"
+            className="w-60 h-80 bg-secondary flex flex-col items-center justify-center rounded-2xl shadow-lg"
           >
             <Image
               src="/profile/aldi-profile.png"
@@ -50,7 +50,7 @@ const AboutSection = () => {
           {/* Rakha */}
           <div
             id="Rakha"
-            className="w-60 h-80 bg-secondary flex flex-col items-center justify-center rounded-2xl shadow-lg md:zoom-90 lg:zoom-100"
+            className="w-60 h-80 bg-secondary flex flex-col items-center justify-center rounded-2xl shadow-lg"
           >
             <Image
               src="/profile/rakha-profile.png"

@@ -1,5 +1,15 @@
 import React from "react";
 
+const listSample = [
+  { id: 1, name: "Hutan", icon: "forest" },
+  { id: 2, name: "Laut", icon: "pool" },
+  { id: 3, name: "Jepang", icon: "ramen_dining" },
+  { id: 4, name: "Salju", icon: "snowflake" },
+  { id: 5, name: "Sawit", icon: "nature" },
+  { id: 6, name: "Makanan", icon: "food_bank" },
+  { id: 7, name: "Indonesia", icon: "payments" },
+];
+
 const CreateSection = () => {
   return (
     <section
@@ -28,7 +38,7 @@ const CreateSection = () => {
             <h2 className="mb-2 text-xl font-semibold text-gray-700">
               2. Upload Pengisi Mosaik
             </h2>
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] gap-3 border-2 border-dashed border-gray-500 rounded-2xl h-48 overflow-auto p-3">
+            <div className="flex flex-wrap gap-3 border-2 border-dashed border-gray-500 rounded-2xl h-48 overflow-auto p-3">
               {Array.from({ length: 7 }).map((_, i) => (
                 <div
                   key={i}
@@ -50,11 +60,11 @@ const CreateSection = () => {
             {Array.from({ length: 7 }).map((_, i) => (
               <div
                 key={i}
-                className="border-2 border-dashed border-gray-300 rounded-2xl w-full h-30 flex flex-col items-center justify-center gap-5"
+                className="border-2 border-dashed border-gray-300 overflow-auto rounded-2xl w-full h-30 flex flex-col items-center justify-center gap-5"
               >
-                <h4 className="mt-5">Sampel {i + 1}</h4>
+                <h4 className="mt-5">{listSample[i].name}</h4>
                 <span className="material-symbols-rounded text-5xl h-full">
-                  image
+                  {listSample[i].icon}
                 </span>
               </div>
             ))}
