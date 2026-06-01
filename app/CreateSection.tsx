@@ -1,14 +1,19 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 
-// Struktur data sampel disesuaikan dengan value kategori yang valid di API
-const listSample = [
-  { id: 1, name: "Bangunan", icon: "corporate_fare", apiValue: "building" },
-  { id: 2, name: "Awan", icon: "cloud", apiValue: "cloud" },
-  { id: 3, name: "Alam", icon: "nature", apiValue: "nature" },
-  { id: 4, name: "Kendaraan", icon: "directions_car", apiValue: "vehicle" },
-];
+interface Category {
+  name: string;
+  icon: string;
+  apiValue: string;
+}
+
+const CATEGORY_ICON_MAP: Record<string, { name: string; icon: string }> = {
+  building: { name: "Bangunan", icon: "corporate_fare" },
+  cloud: { name: "Awan", icon: "cloud" },
+  nature: { name: "Alam", icon: "nature" },
+  vehicle: { name: "Kendaraan", icon: "directions_car" },
+};
 
 interface MosaicResponse {
   job_id: string;
@@ -16,101 +21,193 @@ interface MosaicResponse {
   error?: string;
 }
 
+type AppStatus = "idle" | "pending" | "processing" | "success" | "failed";
+
+const API_BASE_URL = "https://89d3-182-8-68-37.ngrok-free.app/endpoint";
+
+// Helper: semua request ke API lewat sini agar header ngrok otomatis tersertakan
+const apiFetch = (path: string, init?: RequestInit) =>
+  fetch(`${API_BASE_URL}${path}`, {
+    ...init,
+    method: init?.method ?? "GET",
+    headers: {
+      "ngrok-skip-browser-warning": "true",
+      ...init?.headers,
+    },
+  });
+
 const CreateSection = () => {
-  // State Input
+  // --- State Input ---
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("building");
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
+  const [categoriesError, setCategoriesError] = useState<string>("");
 
-  // State Proses API
-  const [status, setStatus] = useState<
-    "idle" | "pending" | "processing" | "success" | "failed"
-  >("idle");
+  // --- State Proses API ---
+  const [status, setStatus] = useState<AppStatus>("idle");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [resultImageUrl, setResultImageUrl] = useState<string>("");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const API_BASE_URL = "http://localhost:8080";
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const resultUrlRef = useRef<string>("");
+  const previewUrlRef = useRef<string>("");
 
-  // Handle ketika user memilih file gambar
+  // --- Fetch kategori saat mount ---
+  useEffect(() => {
+    const fetchCategories = async () => {
+      setCategoriesLoading(true);
+      setCategoriesError("");
+      try {
+        const res = await apiFetch("/categories", { method: "GET" });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data: { categories: string[] } = await res.json();
+
+        const mapped: Category[] = data.categories.map((apiValue) => ({
+          apiValue,
+          name: CATEGORY_ICON_MAP[apiValue]?.name ?? apiValue,
+          icon: CATEGORY_ICON_MAP[apiValue]?.icon ?? "category",
+        }));
+
+        setCategories(mapped);
+        if (mapped.length > 0) setSelectedCategory(mapped[0].apiValue);
+      } catch (err: any) {
+        setCategoriesError("Gagal memuat kategori.");
+      } finally {
+        setCategoriesLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  // --- Cleanup interval & Object URLs saat unmount ---
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (resultUrlRef.current) URL.revokeObjectURL(resultUrlRef.current);
+      if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
+    };
+  }, []);
+
+  // --- Handle pilih file ---
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
+
+      if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
+
+      const url = URL.createObjectURL(file);
+      previewUrlRef.current = url;
+
       setSelectedFile(file);
-      setPreviewUrl(URL.createObjectURL(file)); // Buat preview gambar di UI
+      setPreviewUrl(url);
+      setStatus("idle");
+      setResultImageUrl("");
+      setErrorMessage("");
     }
   };
 
-  // Fungsi Polling ke API Status
-  const startPolling = (jobId: string) => {
-    const intervalId = setInterval(async () => {
+  // --- Polling status job ---
+  const startPolling = useCallback((jobId: string) => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+
+    intervalRef.current = setInterval(async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/status/${jobId}`);
-        const contentType = res.headers.get("content-type");
+        const res = await apiFetch(`/status/${jobId}`);
 
-        // Jika selesai, response mengembalikan file gambar binary
-        if (contentType && contentType.includes("image/")) {
-          clearInterval(intervalId);
+        if (!res.ok) {
+          if (res.status === 404) {
+            clearInterval(intervalRef.current!);
+            setStatus("failed");
+            setErrorMessage("Job tidak ditemukan di server.");
+            return;
+          }
+          throw new Error(`HTTP ${res.status}`);
+        }
 
-          const imageBlob = await res.blob();
-          const imageUrl = URL.createObjectURL(imageBlob);
+        const contentType = res.headers.get("content-type") ?? "";
+
+        // Selesai: response berupa file gambar binary
+        if (contentType.includes("image/")) {
+          clearInterval(intervalRef.current!);
+
+          const blob = await res.blob();
+          if (resultUrlRef.current) URL.revokeObjectURL(resultUrlRef.current);
+
+          const imageUrl = URL.createObjectURL(blob);
+          resultUrlRef.current = imageUrl;
 
           setResultImageUrl(imageUrl);
           setStatus("success");
-        } else {
-          // Jika masih JSON, cek statusnya
-          const data: MosaicResponse = await res.json();
-
-          if (data.status === "processing") {
-            setStatus("processing");
-          } else if (data.status === "failed") {
-            clearInterval(intervalId);
-            setStatus("failed");
-            setErrorMessage(data.error || "Gagal membuat mosaik.");
-          }
+          return;
         }
-      } catch (err) {
-        console.error(err);
-        clearInterval(intervalId);
-        setStatus("failed");
-        setErrorMessage("Koneksi ke server terputus.");
-      }
-    }, 3000); // Cek setiap 3 detik
-  };
 
-  // Fungsi Kirim Data (Trigger saat tombol diklik)
+        // Belum selesai: baca JSON status
+        const data: MosaicResponse = await res.json();
+
+        if (data.status === "pending") {
+          setStatus("pending");
+        } else if (data.status === "processing") {
+          setStatus("processing");
+        } else if (data.status === "failed") {
+          clearInterval(intervalRef.current!);
+          setStatus("failed");
+          setErrorMessage(data.error ?? "Proses mosaik gagal di server.");
+        }
+      } catch (err: any) {
+        clearInterval(intervalRef.current!);
+        setStatus("failed");
+        setErrorMessage("Koneksi ke server terputus saat polling.");
+      }
+    }, 3000);
+  }, []);
+
+  // --- Kirim gambar ke API ---
   const handleGenerate = async () => {
     if (!selectedFile) {
       alert("Silakan upload gambar referensi terlebih dahulu!");
+      return;
+    }
+    if (!selectedCategory) {
+      alert("Silakan pilih kategori terlebih dahulu!");
       return;
     }
 
     setStatus("pending");
     setErrorMessage("");
     setResultImageUrl("");
+    if (resultUrlRef.current) {
+      URL.revokeObjectURL(resultUrlRef.current);
+      resultUrlRef.current = "";
+    }
 
     const formData = new FormData();
     formData.append("image", selectedFile);
     formData.append("category", selectedCategory);
 
     try {
-      const res = await fetch(`${API_BASE_URL}/mosaic`, {
+      const res = await apiFetch("/mosaic", {
         method: "POST",
         body: formData,
       });
 
       if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || "Gagal mengunggah gambar");
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error ?? `HTTP ${res.status}`);
       }
 
       const data: MosaicResponse = await res.json();
-      startPolling(data.job_id); // Mulai antrean polling
+      startPolling(data.job_id);
     } catch (err: any) {
       setStatus("failed");
-      setErrorMessage(err.message || "Terjadi kesalahan sistem.");
+      setErrorMessage(err.message ?? "Terjadi kesalahan sistem.");
     }
   };
+
+  const isProcessing = status === "pending" || status === "processing";
 
   return (
     <section
@@ -132,7 +229,7 @@ const CreateSection = () => {
               type="file"
               ref={fileInputRef}
               onChange={handleFileChange}
-              accept="image/*"
+              accept="image/jpeg,image/png,image/jpg"
               className="hidden"
             />
             <div
@@ -152,12 +249,13 @@ const CreateSection = () => {
                     cloud_upload
                   </span>
                   <p>Klik untuk Pilih Gambar</p>
+                  <p className="text-xs mt-1">Format: JPG, PNG</p>
                 </div>
               )}
             </div>
           </div>
 
-          {/* 2. Hasil / Status Progres */}
+          {/* 2. Hasil / Status */}
           <div className="w-full lg:w-1/2">
             <h2 className="mb-2 text-xl font-semibold text-gray-700">
               Hasil Photomosaic
@@ -167,11 +265,14 @@ const CreateSection = () => {
                 <p className="text-gray-400">Hasil akan muncul di sini</p>
               )}
 
-              {(status === "pending" || status === "processing") && (
+              {isProcessing && (
                 <div className="text-center px-4">
-                  <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary mx-auto mb-3"></div>
+                  <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary mx-auto mb-3" />
                   <p className="font-medium text-gray-700 capitalize">
-                    Status: {status}...
+                    Status:{" "}
+                    {status === "pending"
+                      ? "Menunggu antrian..."
+                      : "Memproses..."}
                   </p>
                   <p className="text-xs text-gray-500 mt-1">
                     Jangan tutup halaman ini, server sedang menyusun gambar.
@@ -185,6 +286,12 @@ const CreateSection = () => {
                     error
                   </span>
                   <p className="text-sm mt-1">{errorMessage}</p>
+                  <button
+                    onClick={() => setStatus("idle")}
+                    className="mt-3 text-xs underline text-red-400"
+                  >
+                    Coba lagi
+                  </button>
                 </div>
               )}
 
@@ -212,49 +319,58 @@ const CreateSection = () => {
           </div>
         </div>
 
-        {/* Pilihan Kategori / Sampel */}
+        {/* Pilihan Kategori (dari API) */}
         <div className="w-full mt-4">
           <h3 className="font-semibold text-gray-700 mb-2">
-            2. Pilih Kategori Pengisi Mosaik :
+            2. Pilih Kategori Pengisi Mosaik:
           </h3>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {listSample.map((sample) => {
-              const isSelected = selectedCategory === sample.apiValue;
-              return (
-                <div
-                  key={sample.id}
-                  onClick={() => setSelectedCategory(sample.apiValue)}
-                  className={`border-2 rounded-2xl p-4 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all ${
-                    isSelected
-                      ? "border-primary bg-blue-50 text-primary scale-105"
-                      : "border-gray-300 bg-white text-gray-500 hover:border-gray-400"
-                  }`}
-                >
-                  <span className="material-symbols-rounded text-4xl">
-                    {sample.icon}
-                  </span>
-                  <h4 className="font-medium text-sm text-center">
-                    {sample.name}
-                  </h4>
-                </div>
-              );
-            })}
-          </div>
+
+          {categoriesLoading && (
+            <p className="text-sm text-gray-400">Memuat kategori...</p>
+          )}
+
+          {categoriesError && (
+            <p className="text-sm text-red-500">{categoriesError}</p>
+          )}
+
+          {!categoriesLoading && !categoriesError && (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {categories.map((cat) => {
+                const isSelected = selectedCategory === cat.apiValue;
+                return (
+                  <div
+                    key={cat.apiValue}
+                    onClick={() => setSelectedCategory(cat.apiValue)}
+                    className={`border-2 rounded-2xl p-4 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all ${
+                      isSelected
+                        ? "border-primary bg-blue-50 text-primary scale-105"
+                        : "border-gray-300 bg-white text-gray-500 hover:border-gray-400"
+                    }`}
+                  >
+                    <span className="material-symbols-rounded text-4xl">
+                      {cat.icon}
+                    </span>
+                    <h4 className="font-medium text-sm text-center">
+                      {cat.name}
+                    </h4>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
-        {/* Tombol Aksi */}
+        {/* Tombol Generate */}
         <button
           onClick={handleGenerate}
-          disabled={status === "pending" || status === "processing"}
+          disabled={isProcessing || categoriesLoading}
           className={`w-full max-w-xs mt-6 shadow-lg flex justify-center items-center rounded-2xl h-12 text-white text-lg font-semibold transition-opacity ${
-            status === "pending" || status === "processing"
+            isProcessing || categoriesLoading
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-primary cursor-pointer hover:opacity-90"
           }`}
         >
-          {status === "pending" || status === "processing"
-            ? "Memproses..."
-            : "Generate Mosaik"}
+          {isProcessing ? "Memproses..." : "Generate Mosaik"}
         </button>
       </div>
     </section>
