@@ -23,13 +23,12 @@ interface MosaicResponse {
 
 type AppStatus = "idle" | "pending" | "processing" | "success" | "failed";
 
-const API_BASE_URL = "https://89d3-182-8-68-37.ngrok-free.app/endpoint";
+const API_BASE_URL = "https://d1f6-182-8-68-37.ngrok-free.app";
 
 // Helper: semua request ke API lewat sini agar header ngrok otomatis tersertakan
 const apiFetch = (path: string, init?: RequestInit) =>
   fetch(`${API_BASE_URL}${path}`, {
     ...init,
-    method: init?.method ?? "GET",
     headers: {
       "ngrok-skip-browser-warning": "true",
       ...init?.headers,
