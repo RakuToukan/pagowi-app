@@ -23,9 +23,8 @@ interface MosaicResponse {
 
 type AppStatus = "idle" | "pending" | "processing" | "success" | "failed";
 
-const API_BASE_URL = "https://d1f6-182-8-68-37.ngrok-free.app";
+const API_BASE_URL = "https://f2a1-103-242-124-24.ngrok-free.app";
 
-// Helper: semua request ke API lewat sini agar header ngrok otomatis tersertakan
 const apiFetch = (path: string, init?: RequestInit) =>
   fetch(`${API_BASE_URL}${path}`, {
     ...init,
@@ -82,7 +81,6 @@ const CreateSection = () => {
     fetchCategories();
   }, []);
 
-  // --- Cleanup interval & Object URLs saat unmount ---
   useEffect(() => {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
@@ -91,7 +89,6 @@ const CreateSection = () => {
     };
   }, []);
 
-  // --- Handle pilih file ---
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -109,7 +106,6 @@ const CreateSection = () => {
     }
   };
 
-  // --- Polling status job ---
   const startPolling = useCallback((jobId: string) => {
     if (intervalRef.current) clearInterval(intervalRef.current);
 
@@ -129,7 +125,6 @@ const CreateSection = () => {
 
         const contentType = res.headers.get("content-type") ?? "";
 
-        // Selesai: response berupa file gambar binary
         if (contentType.includes("image/")) {
           clearInterval(intervalRef.current!);
 
@@ -144,7 +139,6 @@ const CreateSection = () => {
           return;
         }
 
-        // Belum selesai: baca JSON status
         const data: MosaicResponse = await res.json();
 
         if (data.status === "pending") {
@@ -164,7 +158,7 @@ const CreateSection = () => {
     }, 3000);
   }, []);
 
-  // --- Kirim gambar ke API ---
+  // Kirim gambar ke API
   const handleGenerate = async () => {
     if (!selectedFile) {
       alert("Silakan upload gambar referensi terlebih dahulu!");
