@@ -69,12 +69,11 @@ const AboutSection = () => {
           <p className="text-lg text-secondary text-center mt-10">
             PAG OWI lahir dari sebuah ide sederhana: Bagaimana jika kita bisa
             melihat gambaran besar dari ribuan momen kecil yang kita miliki?
-            Dari sana, kami mengembangkan Photomosaic Art Generator : Optical
-            Weighted Indexing, sebuah web app cerdas yang dirancang untuk
-            mengubah koleksi foto digital Anda menjadi sebuah karya seni mosaik
-            yang. Kami tidak menggunakan trik filter instan. Aplikasi ini
-            sepenuhnya memanfaatkan algoritma K-Means untuk mengenali struktur
-            warna dan KNN (K-Nearest Neighbors) untuk berburu foto kecil yang
+            Dari sana, kami mengembangkan Photomosaic Art Generator : OWI,
+            sebuah web app cerdas yang dirancang untuk mengubah koleksi foto
+            digital Anda menjadi sebuah karya seni mosaik yang. Kami tidak
+            menggunakan trik filter instan. Aplikasi ini sepenuhnya memanfaatkan
+            algoritma KNN (K-Nearest Neighbors) untuk berburu foto kecil yang
             paling pas untuk mengisi setiap sudut piksel gambar Anda. Melalui
             pendekatan Data Science yang presisi dan antarmuka web yang
             intuitif, PAG OWI hadir untuk membantu para kreator, ilustrator, dan

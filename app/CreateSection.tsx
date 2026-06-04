@@ -53,7 +53,6 @@ const CreateSection = () => {
   const resultUrlRef = useRef<string>("");
   const previewUrlRef = useRef<string>("");
 
-  // --- Fetch kategori saat mount ---
   useEffect(() => {
     const fetchCategories = async () => {
       setCategoriesLoading(true);
