@@ -11,7 +11,7 @@ const EmbedStreamlit = () => {
           Buat Mosaikmu!
         </h1>
         <iframe
-          src="https://pagowi.streamlit.app/?embed=true"
+          src="https://pag-owi.streamlit.app/?embed=true"
           width="100%"
           height="800px"
           style={{ border: "none", borderRadius: "16px" }}
