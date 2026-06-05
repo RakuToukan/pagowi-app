@@ -77,8 +77,7 @@ const AboutSection = () => {
             untuk mengisi setiap sudut piksel gambar Anda. Melalui pendekatan
             Artificial Intelligence yang presisi dan antarmuka web yang
             intuitif, PAG OWI hadir untuk membantu para kreator, ilustrator, dan
-            pencinta seni digital menciptakan karya visual tanpa batas. Hidup
-            Jokowi!
+            pencinta seni digital menciptakan karya visual tanpa batas.
           </p>
           <h3 className="text-2xl font-bold text-secondary text-center mt-10">
             Cara Kerja Photomosaic Generator dengan Algoritma KNN
