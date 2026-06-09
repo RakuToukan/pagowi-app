@@ -20,12 +20,6 @@ const Footer = () => {
           <Link href="#hero" className="hover:underline">
             Home
           </Link>
-          <Link href="#service" className="hover:underline">
-            Our Service
-          </Link>
-          <Link href="#pricing" className="hover:underline">
-            Pricing
-          </Link>
           <Link href="#about" className="hover:underline">
             About Us
           </Link>

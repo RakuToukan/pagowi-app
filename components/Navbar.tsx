@@ -73,20 +73,8 @@ const Navbar = () => {
             Home
           </Link>
           <Link
-            href="#service"
-            className="nav relative items-center text-md tracking-normal hover:text-black"
-          >
-            Our Service
-          </Link>
-          <Link
-            href="#pricing"
-            className="nav relative text-md tracking-normal hover:text-black"
-          >
-            Pricing
-          </Link>
-          <Link
             href="#about"
-            className="nav relative text-md tracking-normal hover:text-black"
+            className="nav relative items-center text-md tracking-normal hover:text-black"
           >
             About Us
           </Link>
