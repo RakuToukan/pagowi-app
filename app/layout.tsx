@@ -25,6 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className="scroll-smooth">
+      <head><meta name="google-site-verification" content="rN809bxoZqAss6laDrZHH8knvho7eZiPESASIPRC89Q" /></head>
       <body className={`${jakartaSans.variable} antialiased`} tabIndex={-1}>
         {children}
       </body>
